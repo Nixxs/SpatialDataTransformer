@@ -1,10 +1,16 @@
 import "./App.css";
+import Content from "./components/Content";
+import Layout from "./components/Layout";
+import ThemeProvider from "./components/ThemeContext";
+import { FC} from 'react';
 
-function App() {
+const App:FC = () =>  {
 	return (
-		<>
-			<p>content goes here</p>
-		</>
+		<ThemeProvider>
+			<Content>
+				<Layout />
+			</Content>
+		</ThemeProvider>
 	);
 }
 
