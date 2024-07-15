@@ -1,6 +1,7 @@
-import {Box} from '@mui/material';
+import {Box, Typography} from '@mui/material';
 import { ThemeContext } from "./ThemeContext";
 import { useContext } from 'react';
+import MapContainer from "./MapContainer";
 
 
 const Layout = () => {
@@ -19,14 +20,30 @@ const Layout = () => {
 				sx={{
 					flex: 0,
 					display: 'flex',
-					flexDirection: 'row',
+					flexDirection: 'column',
 					justifyContent: 'center',
 					alignItems: 'center',
 					backgroundColor: theme.palette.background.paper,
 					borderRadius: 3,
+					padding: 3
 				}}
 			>
-				<h1>Header</h1>
+				<Typography 
+					sx={{
+						fontWeight: 600,
+						fontSize: 32
+					}}
+				>
+					Mapbox Drawing Tools
+				</Typography>
+				<Typography 
+					sx={{
+						fontWeight: 300,
+						fontSize: 18
+					}}
+				>
+					Geoflip Integration Demo
+				</Typography>
 			</Box>
 			<Box
 				sx={{
@@ -62,7 +79,7 @@ const Layout = () => {
 						marginTop: 2,
 					}}
 				>
-					<h2>Map</h2>
+					<MapContainer />
 				</Box>
 
 			</Box>
