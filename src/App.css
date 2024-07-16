@@ -7,3 +7,9 @@ html {
 * {
 	box-sizing: border-box;
 }
+
+.map-container {
+	top: 0;
+	bottom: 0;
+	width: 100%;
+}
