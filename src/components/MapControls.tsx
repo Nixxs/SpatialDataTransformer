@@ -36,6 +36,7 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 				<br/>
 				Active Features: {activeFeatures.length}
 			</Typography>
+			
 		</Box>
 
 	);

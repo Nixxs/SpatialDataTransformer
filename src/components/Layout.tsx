@@ -57,7 +57,8 @@ const Layout = () => {
 				<Typography 
 					sx={{
 						fontWeight: 300,
-						fontSize: 18
+						fontSize: 18,
+						color: theme.palette.text.secondary
 					}}
 				>
 					Geoflip Integration Demo

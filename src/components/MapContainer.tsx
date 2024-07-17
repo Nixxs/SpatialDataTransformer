@@ -1,9 +1,10 @@
-import { FC, useRef, useEffect } from "react";
+import { FC, useRef, useEffect, useContext } from "react";
 import mapboxgl, { LngLat } from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {ClearAll} from "../mapcontrols/CustomControls";
 import "../mapcontrols/CustomControls.css";
 import { Feature } from "geojson";
+import { ThemeContext } from "./ThemeContext"
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN as string;
 
@@ -18,6 +19,7 @@ const MapContainer: FC<MapContainerProps> = ({centrePosition, setCentrePosition,
 	const mapContainer = useRef<HTMLDivElement | null>(null);
 	const map = useRef<mapboxgl.Map | null>(null);
 	const rotationInterval = useRef<number | null>(null);
+	const { theme } = useContext(ThemeContext);
 
 	useEffect(() => {
 		if (map.current || !mapContainer.current) return; // Initialize map only once
@@ -25,16 +27,16 @@ const MapContainer: FC<MapContainerProps> = ({centrePosition, setCentrePosition,
 			container: mapContainer.current,
 			center: centrePosition, // starting position [lng, lat]
 			zoom: 2, // starting zoom
-			style: "mapbox://styles/mapbox/streets-v12",
+			style: theme.mapTheme,
 		});
 
 		map.current.on("style.load", () => {
 			if (map.current) {
 				map.current.setFog({
-					color: "#b3c8e3", // dark blue color
-					"high-color": "#36414f",
+					color: theme.palette.map.fogColor, 
+					"high-color": theme.palette.map.fogHighColor,
 					"horizon-blend": 0.02,
-					"space-color": "#14181f",
+					"space-color": theme.palette.map.space,
 				});
 			}
 		});
