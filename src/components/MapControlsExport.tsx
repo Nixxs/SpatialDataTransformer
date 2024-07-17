@@ -9,14 +9,22 @@ import {
 	TextField, 
 	InputAdornment,
 	Button } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
 import { FC, useContext, useState } from "react";
 import { ThemeContext } from "./ThemeContext";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Feature } from "geojson";
 
-const MapControlsExport:FC = () => {
+type MapControlExportProps = {
+	activeFeatures: Feature[]
+}
+
+const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures}) => {
 	const {theme} = useContext(ThemeContext);
 	const [outputFormat, setOutputFormat] = useState<string>("shp");
 	const [outputCRS, setOutputCRS] = useState<number | null>(4326);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const handleOutputFormatChange = (event: SelectChangeEvent) => {
 		setOutputFormat(event.target.value as string);
@@ -33,6 +41,12 @@ const MapControlsExport:FC = () => {
 		}
 	}
 
+	const handleExport = () => {
+		console.log(outputFormat);
+		console.log(outputCRS);
+		console.log(activeFeatures);
+	}
+
 	return (
 		<Box
 			sx={{
@@ -43,7 +57,8 @@ const MapControlsExport:FC = () => {
 				borderRadius: 2,
 				ml: 3,
 				mr: 3,
-				p: 2
+				p: 2,
+				position: 'relative', 
 			}}
 		>
 			<Typography
@@ -150,6 +165,7 @@ const MapControlsExport:FC = () => {
 				/>
 				<Button
 					variant="outlined"
+					onClick={handleExport}
 					sx={{
 						ml: 1,
 						height: 35
@@ -158,6 +174,22 @@ const MapControlsExport:FC = () => {
 					export
 				</Button>
 			</FormControl >
+			<Backdrop
+				sx={{ 
+					color: theme.palette.text.primary,
+					backdropFilter: "blur(1px)",
+					zIndex: 1,
+					position: 'absolute',
+					m: 0, 
+					p: 0, 
+					width: '100%',
+					height: '100%',
+					borderRadius: 3,
+				}}
+				open={loading}
+			>
+				<CircularProgress color="inherit" />
+			</Backdrop>
 		</Box>
 	);
 }

@@ -74,7 +74,9 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 				</Box>
 			</Box>
 			
-			<MapControlsExport />
+			<MapControlsExport 
+				activeFeatures={activeFeatures}
+			/>
 		</Box>
 
 	);
