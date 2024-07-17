@@ -9,13 +9,13 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN as string;
 type MapContainerProps = {
 	centrePosition: LngLat;
 	setCentrePosition: (position: LngLat) => void;
+	draw: MapboxDraw;
 };
 
-const MapContainer: FC<MapContainerProps> = ({centrePosition,setCentrePosition}) => {
+const MapContainer: FC<MapContainerProps> = ({centrePosition, setCentrePosition, draw}) => {
 	const mapContainer = useRef<HTMLDivElement | null>(null);
 	const map = useRef<mapboxgl.Map | null>(null);
 	const rotationInterval = useRef<number | null>(null);
-	const draw = useRef<MapboxDraw | null>(null);
 
 	useEffect(() => {
 		if (map.current || !mapContainer.current) return; // Initialize map only once
@@ -37,21 +37,12 @@ const MapContainer: FC<MapContainerProps> = ({centrePosition,setCentrePosition})
 			}
 		});
 
-        draw.current = new MapboxDraw({
-            displayControlsDefault: false,
-            controls: {
-                polygon: true,
-				line_string: true,
-				point: true
-            }
-        });
-
 		map.current.on("load", () => {
 			startRotation();
 
-            if (map.current && draw.current) {
-                map.current.addControl(draw.current as unknown as mapboxgl.IControl, 'top-left');
-				map.current.addControl(new ClearAll(draw.current), 'top-left');
+            if (map.current && draw) {
+                map.current.addControl(draw as unknown as mapboxgl.IControl, 'top-left');
+				map.current.addControl(new ClearAll(draw), 'top-left');
             }
 		});
 
@@ -67,7 +58,7 @@ const MapContainer: FC<MapContainerProps> = ({centrePosition,setCentrePosition})
 		return () => {
 			stopRotation();
 		};
-	}, []);
+	}, [draw]);
 
 	const startRotation = () => {
 		if (rotationInterval.current) return;

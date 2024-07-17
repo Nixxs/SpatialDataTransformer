@@ -1,13 +1,23 @@
 import {Box, Typography} from '@mui/material';
 import { ThemeContext } from "./ThemeContext";
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import MapContainer from "./MapContainer";
 import { LngLat } from "mapbox-gl";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import MapControls from './MapControls';
 
 
 const Layout = () => {
 	const {theme} = useContext(ThemeContext);
 	const [mapCentrePosition, setMapCentrePosition] = useState(new LngLat(0, 0));
+	const drawRef = useRef<MapboxDraw>(new MapboxDraw({
+		displayControlsDefault: false,
+		controls: {
+			polygon: true,
+			line_string: true,
+			point: true
+		}
+	}));
 
 	return (
 		<Box
@@ -66,12 +76,10 @@ const Layout = () => {
 						marginTop: 2,
 					}}
 				>
-					<h2>Map Controls</h2>
-					<p>
-						lat: {mapCentrePosition.lat.toFixed(2)} 
-						<br/>
-						lng: {mapCentrePosition.lng.toFixed(2)}
-					</p>
+					<MapControls 
+						draw={drawRef.current}
+						mapCentrePosition={mapCentrePosition}
+					/>
 				</Box>
 				<Box
 					sx={{
@@ -88,6 +96,7 @@ const Layout = () => {
 					<MapContainer 
 						centrePosition={mapCentrePosition}
 						setCentrePosition={setMapCentrePosition}
+						draw={drawRef.current}
 					/>
 				</Box>
 
