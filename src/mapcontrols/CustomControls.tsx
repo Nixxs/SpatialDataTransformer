@@ -3,14 +3,17 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { createRoot } from 'react-dom/client';
 import React from 'react';
+import { Feature } from "geojson";
 
 class ClearAll implements mapboxgl.IControl {
     private container: HTMLElement | undefined;
 	private root: ReturnType<typeof createRoot> | undefined;
 	private draw: MapboxDraw;
+	private updateDrawnFeatures: (features: Feature[]) => void;
 
-	constructor(draw: MapboxDraw) {
+	constructor(draw: MapboxDraw, updateDrawnFeatures: (features: Feature[]) => void) {
         this.draw = draw;
+		this.updateDrawnFeatures = updateDrawnFeatures
     }
 
     onAdd() {
@@ -47,20 +50,8 @@ class ClearAll implements mapboxgl.IControl {
     }
 
     onClick() {
-        console.log('clear-all control clicked!');
-        // Log all features
-        const allFeatures = this.draw.getAll();
-        console.log('All drawn features:', allFeatures);
-
-        // Log feature count
-        console.log('Number of features:', allFeatures.features.length);
-
-        // Log each feature individually
-        allFeatures.features.forEach((feature, index) => {
-            console.log(`Feature ${index + 1}:`, feature);
-        });
-
 		this.draw.deleteAll();
+		this.updateDrawnFeatures([]);
     }
 }
 

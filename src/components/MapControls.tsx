@@ -3,13 +3,15 @@ import { Typography, Box } from "@mui/material";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { LngLat } from "mapbox-gl";
 import { ThemeContext } from "./ThemeContext";
+import { Feature } from "geojson";
 
 type MapControlProps = {
 	draw: MapboxDraw,
-	mapCentrePosition: LngLat
+	mapCentrePosition: LngLat,
+	activeFeatures: Feature[]
 };
 
-const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition}) => {
+const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeatures}) => {
 	const {theme} = useContext(ThemeContext);
 
 	return (
@@ -31,17 +33,8 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition}) => {
 				}}
 			>
 				Position: {mapCentrePosition.lat.toFixed(2)},{mapCentrePosition.lng.toFixed(2)}
-			</Typography>
-
-			<Typography
-				sx={{
-					fontWeight: 400,
-					fontSize: 14,
-					mt: 1,
-					color: theme.palette.text.primary,
-				}}
-			>
-				Drawn Features: {0}
+				<br/>
+				Active Features: {activeFeatures.length}
 			</Typography>
 		</Box>
 

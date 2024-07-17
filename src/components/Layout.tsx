@@ -5,11 +5,13 @@ import MapContainer from "./MapContainer";
 import { LngLat } from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import MapControls from './MapControls';
+import { Feature } from "geojson";
 
 
 const Layout = () => {
 	const {theme} = useContext(ThemeContext);
 	const [mapCentrePosition, setMapCentrePosition] = useState(new LngLat(0, 0));
+	const [activeFeatures, setActiveFeatures] = useState<Feature[]>([]);
 	const drawRef = useRef<MapboxDraw>(new MapboxDraw({
 		displayControlsDefault: false,
 		controls: {
@@ -18,6 +20,10 @@ const Layout = () => {
 			point: true
 		}
 	}));
+
+	const handleUpdateDrawnFeatures = (features: Feature[]) => {
+        setActiveFeatures(features);
+    };
 
 	return (
 		<Box
@@ -79,6 +85,7 @@ const Layout = () => {
 					<MapControls 
 						draw={drawRef.current}
 						mapCentrePosition={mapCentrePosition}
+						activeFeatures={activeFeatures}
 					/>
 				</Box>
 				<Box
@@ -97,6 +104,7 @@ const Layout = () => {
 						centrePosition={mapCentrePosition}
 						setCentrePosition={setMapCentrePosition}
 						draw={drawRef.current}
+						updateDrawnFeatures={handleUpdateDrawnFeatures}
 					/>
 				</Box>
 
