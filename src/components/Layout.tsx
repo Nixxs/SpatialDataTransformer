@@ -59,7 +59,6 @@ const Layout = () => {
 						flex: 1,
 						display: 'flex',
 						flexDirection: 'column',
-						justifyContent: 'center',
 						alignItems: 'center',
 						backgroundColor: theme.palette.background.paper,
 						borderRadius: 3,

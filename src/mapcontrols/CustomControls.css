@@ -1,0 +1,34 @@
+/* ClearAll.css */
+
+.clear-all-container {
+    width: 30px !important;
+}
+
+.clear-all-button {
+    background: #ffffff;
+    border: none;
+    cursor: pointer;
+    display: block;
+    width: 100% !important;
+    height: 30px;
+    padding: 0;
+}
+
+.clear-all-button:hover {
+    background-color: #f2f2f2;
+}
+
+.clear-all-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Style for the MUI icon */
+.clear-all-icon svg {
+    width: 20px;
+    height: 20px;
+    color: #000; 
+}
