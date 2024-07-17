@@ -7,15 +7,13 @@ import React from 'react';
 class ClearAll implements mapboxgl.IControl {
     private container: HTMLElement | undefined;
 	private root: ReturnType<typeof createRoot> | undefined;
-    private map: mapboxgl.Map | undefined;
 	private draw: MapboxDraw;
 
 	constructor(draw: MapboxDraw) {
         this.draw = draw;
     }
 
-    onAdd(map: mapboxgl.Map) {
-        this.map = map;
+    onAdd() {
         this.container = document.createElement('div');
         this.container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group clear-all-container';
         
@@ -46,7 +44,6 @@ class ClearAll implements mapboxgl.IControl {
         if (this.container) {
             this.container.parentNode?.removeChild(this.container);
         }
-        this.map = undefined;
     }
 
     onClick() {
