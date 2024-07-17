@@ -49,9 +49,9 @@ const MapContainer: FC<MapContainerProps> = ({centrePosition,setCentrePosition})
 		map.current.on("load", () => {
 			startRotation();
 
-            if (map.current) {
+            if (map.current && draw.current) {
                 map.current.addControl(draw.current as unknown as mapboxgl.IControl, 'top-left');
-				map.current.addControl(new ClearAll(), 'top-left');
+				map.current.addControl(new ClearAll(draw.current), 'top-left');
             }
 		});
 
