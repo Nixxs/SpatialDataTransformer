@@ -76,7 +76,6 @@ const Layout = () => {
 						flex: 1,
 						display: 'flex',
 						flexDirection: 'column',
-						alignItems: 'center',
 						backgroundColor: theme.palette.background.paper,
 						borderRadius: 3,
 						marginRight: 2,
