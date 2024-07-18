@@ -17,6 +17,10 @@ export const lightTheme = {
 			primary: "#000",
 			secondary: "#878787"
 		},
+		error: {
+			primary: "#6b2323",
+			secondary: "#ebb2b2"
+		},
 		primary: {
 			main: "#47acff",
 		},
@@ -42,6 +46,10 @@ export const darkTheme = {
 		text: {
 			primary: "#fff",
 			secondary: "#878787"
+		},
+		error: {
+			primary: "#6b2323",
+			secondary: "#ebb2b2"
 		},
 		primary: {
 			main: "#47acff",

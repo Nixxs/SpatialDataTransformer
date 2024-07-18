@@ -18,10 +18,11 @@ import { Feature } from "geojson";
 import axios from "axios";
 
 type MapControlExportProps = {
-	activeFeatures: Feature[]
+	activeFeatures: Feature[],
+	handleSetErrorMessage: (message:string | null) => void
 }
 
-const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures}) => {
+const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures, handleSetErrorMessage}) => {
 	const {theme} = useContext(ThemeContext);
 	const [outputFormat, setOutputFormat] = useState<string>("shp");
 	const [outputCRS, setOutputCRS] = useState<number | null>(4326);
@@ -80,13 +81,12 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures}) => {
 						// Convert blob to text
 						const text = await errorResponse.data.text();
 						const jsonError = JSON.parse(text);
-						console.log("Error from server:", jsonError.message);
+						handleSetErrorMessage(`error from geoflip - ${jsonError.message}`);
 					} catch (parseError) {
-						console.log("An unexpected error occurred. Please try again.");
+						handleSetErrorMessage("An unexpected error occurred. Please try again.");
 					}
 				} else {
-					// Handle other errors
-					console.log("An unexpected error occurred:", error);
+					handleSetErrorMessage(`An unexpected error occurred - ${error}`);
 				}
             } finally {
                 setLoading(false);
