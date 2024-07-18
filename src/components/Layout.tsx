@@ -170,6 +170,7 @@ const Layout = () => {
 							mapCentrePosition={mapCentrePosition}
 							activeFeatures={activeFeatures}
 							handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+							stopRotation={stopRotation}
 						/>
 					)}
 				</Box>

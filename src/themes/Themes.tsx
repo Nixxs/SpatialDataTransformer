@@ -23,7 +23,7 @@ export const lightTheme = {
 			secondary: "#ebb2b2"
 		},
 		primary: {
-			main: "#47acff",
+			main: "#3690EB",
 		},
 		secondary: {
 			main: "#f50057",
@@ -54,7 +54,7 @@ export const darkTheme = {
 			secondary: "#ebb2b2"
 		},
 		primary: {
-			main: "#47acff",
+			main: "#3690EB",
 		},
 		secondary: {
 			main: "#3f51b5",

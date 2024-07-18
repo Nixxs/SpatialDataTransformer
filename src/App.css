@@ -13,3 +13,12 @@ html {
 	bottom: 0;
 	width: 100%;
 }
+
+.MuiButton-outlined {
+	color: #878787 !important;
+	border-color: #878787 !important;
+}
+
+.MuiButton-contained:not(:disabled) {
+	background-color: #3690EB !important;
+}

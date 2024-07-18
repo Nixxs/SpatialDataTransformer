@@ -19,9 +19,10 @@ type MapControlProps = {
 	mapCentrePosition: LngLat,
 	activeFeatures: Feature[],
 	handleUpdateDrawnFeatures: (features:Feature[]) => void
+	stopRotation: () => void
 };
 
-const MapControls:FC<MapControlProps> = ({map, draw, mapCentrePosition, activeFeatures, handleUpdateDrawnFeatures}) => {
+const MapControls:FC<MapControlProps> = ({map, draw, mapCentrePosition, activeFeatures, handleUpdateDrawnFeatures, stopRotation}) => {
 	const {theme} = useContext(ThemeContext);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -120,6 +121,7 @@ const MapControls:FC<MapControlProps> = ({map, draw, mapCentrePosition, activeFe
 				map={map}
 				draw={draw}
 				handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+				stopRotation={stopRotation}
 			/>
 			<MapControlsExport 
 				activeFeatures={activeFeatures}

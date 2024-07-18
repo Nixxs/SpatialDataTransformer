@@ -25,7 +25,8 @@ import mapboxgl from "mapbox-gl";
 type MapControlUploadProps = {
 	map: mapboxgl.Map | null,
 	draw: MapboxDraw,
-	handleUpdateDrawnFeatures: (features: Feature[]) => void
+	handleUpdateDrawnFeatures: (features: Feature[]) => void,
+	stopRotation: () => void
 }
 
 type InputFormat = "shp" | "dxf" | "gpkg"
@@ -35,7 +36,7 @@ type UploadConfig = {
 	input_crs?: string,
 }
 
-const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDrawnFeatures}) => {
+const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDrawnFeatures, stopRotation}) => {
 	const { theme } = useContext(ThemeContext);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [inputFormat, setInputFormat] = useState<InputFormat>("shp");
@@ -102,6 +103,8 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
 
 				const features = draw.getAll().features
 				handleUpdateDrawnFeatures(features);
+
+				stopRotation();
 
 				// Fit map to the extent of the new features using Turf.js
 				if (map && features.length > 0) {
