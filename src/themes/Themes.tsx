@@ -12,6 +12,7 @@
 export const lightTheme = {
 	type: "light",
 	mapTheme: "mapbox://styles/mapbox/streets-v12",
+	geoflipLogo: "Geoflip_Logo.png",
 	palette: {
 		text: {
 			primary: "#000",
@@ -42,6 +43,7 @@ export const lightTheme = {
 export const darkTheme = {
 	type: "dark",
 	mapTheme: "mapbox://styles/mapbox/streets-v12",
+	geoflipLogo: "Geoflip_Logo_inversed.png",
 	palette: {
 		text: {
 			primary: "#fff",

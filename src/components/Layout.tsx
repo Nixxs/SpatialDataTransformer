@@ -49,10 +49,11 @@ const Layout = () => {
 				<Typography 
 					sx={{
 						fontWeight: 600,
-						fontSize: 32
+						fontSize: 32,
+						color: theme.palette.text.secondary
 					}}
 				>
-					Mapbox Drawing Tools
+					Spatial Data Transformer
 				</Typography>
 				<Typography 
 					sx={{
@@ -61,7 +62,7 @@ const Layout = () => {
 						color: theme.palette.text.secondary
 					}}
 				>
-					Geoflip Integration Demo
+					A <a href="https://account.geoflip.io"><img src={theme.geoflipLogo} width="80px" /></a> Integration Demo
 				</Typography>
 			</Box>
 			<Box

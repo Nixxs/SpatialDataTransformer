@@ -43,7 +43,8 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 					sx={{
 						fontWeight: 600,
 						fontSize: 24,
-						mt: 2
+						mt: 2,
+						color: theme.palette.text.secondary
 					}}
 				>
 					Map Controls
@@ -60,23 +61,15 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 							flex: 1,
 							fontSize: 11,
 							color: theme.palette.text.secondary,
-							textAlign: "right",
+							textAlign: "center",
 							mr: 1
 						}}
 					>
 						Position (lat/lng): {mapCentrePosition.lat.toFixed(2)},{mapCentrePosition.lng.toFixed(2)}
-					</Typography>
-					<Typography 
-						sx={{
-							flex: 1,
-							fontSize: 11,
-							color: theme.palette.text.secondary,
-							textAlign: "left",
-							ml: 1
-						}}
-					>
+						{" "}
 						Active Features: {activeFeatures.length}
 					</Typography>
+					
 				</Box>
 				{errorMessage && (
 					<Box
