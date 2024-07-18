@@ -14,13 +14,14 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 type MapControlProps = {
+	map: mapboxgl.Map | null,
 	draw: MapboxDraw,
 	mapCentrePosition: LngLat,
 	activeFeatures: Feature[],
 	handleUpdateDrawnFeatures: (features:Feature[]) => void
 };
 
-const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeatures, handleUpdateDrawnFeatures}) => {
+const MapControls:FC<MapControlProps> = ({map, draw, mapCentrePosition, activeFeatures, handleUpdateDrawnFeatures}) => {
 	const {theme} = useContext(ThemeContext);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -102,12 +103,12 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 							size="small"
 							onClick={() => setErrorMessage(null)}
 							sx={{
-							padding: 0,
-							marginLeft: 1,
-							color: theme.palette.error.primary,
-							'&:hover': {
-								backgroundColor: 'transparent',
-							},
+								padding: 0,
+								marginLeft: 1,
+								color: theme.palette.error.primary,
+								'&:hover': {
+									backgroundColor: 'transparent',
+								},
 							}}
 						>
 							<CloseIcon fontSize="small" />
@@ -115,7 +116,8 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 					</Box>
 				)}
 			</Box>
-			<MapControlsUpload 
+			<MapControlsUpload
+				map={map}
 				draw={draw}
 				handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
 			/>

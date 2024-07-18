@@ -19,8 +19,11 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from "axios";
 import { Feature } from "geojson";
+import * as turf from '@turf/turf';
+import mapboxgl from "mapbox-gl";
 
 type MapControlUploadProps = {
+	map: mapboxgl.Map | null,
 	draw: MapboxDraw,
 	handleUpdateDrawnFeatures: (features: Feature[]) => void
 }
@@ -29,10 +32,10 @@ type InputFormat = "shp" | "dxf" | "gpkg"
 
 type UploadConfig = {
 	output_format: string,
-	input_crs?: string
+	input_crs?: string,
 }
 
-const MapControlsUpload: FC<MapControlUploadProps> = ({draw, handleUpdateDrawnFeatures}) => {
+const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDrawnFeatures}) => {
 	const { theme } = useContext(ThemeContext);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [inputFormat, setInputFormat] = useState<InputFormat>("shp");
@@ -99,6 +102,23 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({draw, handleUpdateDrawnFe
 
 				const features = draw.getAll().features
 				handleUpdateDrawnFeatures(features);
+
+				// Fit map to the extent of the new features using Turf.js
+				if (map && features.length > 0) {
+					const featureCollection = turf.featureCollection(features);
+					const bbox = turf.bbox(featureCollection);
+					const bounds = new mapboxgl.LngLatBounds(
+						[bbox[0], bbox[1]],
+						[bbox[2], bbox[3]]
+					);
+	
+					// the mapbox type for fitbounds seems to conflict with typescript
+					map.fitBounds(bounds, {
+						padding: 50,
+						maxZoom: 15,
+						duration: 5000 
+					} as any);
+				}
             }
 
             setSelectedFile(null);

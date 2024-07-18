@@ -163,12 +163,15 @@ const Layout = () => {
 						marginTop: 2,
 					}}
 				>
-					<MapControls 
-						draw={drawRef.current}
-						mapCentrePosition={mapCentrePosition}
-						activeFeatures={activeFeatures}
-						handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
-					/>
+					{map && (
+						<MapControls 
+							map={map.current}
+							draw={drawRef.current}
+							mapCentrePosition={mapCentrePosition}
+							activeFeatures={activeFeatures}
+							handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+						/>
+					)}
 				</Box>
 				<Box
 					sx={{
