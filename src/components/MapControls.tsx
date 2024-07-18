@@ -16,10 +16,11 @@ import CloseIcon from '@mui/icons-material/Close';
 type MapControlProps = {
 	draw: MapboxDraw,
 	mapCentrePosition: LngLat,
-	activeFeatures: Feature[]
+	activeFeatures: Feature[],
+	handleUpdateDrawnFeatures: (features:Feature[]) => void
 };
 
-const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeatures}) => {
+const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeatures, handleUpdateDrawnFeatures}) => {
 	const {theme} = useContext(ThemeContext);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -116,6 +117,7 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 			</Box>
 			<MapControlsUpload 
 				draw={draw}
+				handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
 			/>
 			<MapControlsExport 
 				activeFeatures={activeFeatures}

@@ -18,9 +18,11 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from "axios";
+import { Feature } from "geojson";
 
 type MapControlUploadProps = {
 	draw: MapboxDraw,
+	handleUpdateDrawnFeatures: (features: Feature[]) => void
 }
 
 type InputFormat = "shp" | "dxf" | "gpkg"
@@ -30,7 +32,7 @@ type UploadConfig = {
 	input_crs?: string
 }
 
-const MapControlsUpload: FC<MapControlUploadProps> = ({draw}) => {
+const MapControlsUpload: FC<MapControlUploadProps> = ({draw, handleUpdateDrawnFeatures}) => {
 	const { theme } = useContext(ThemeContext);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [inputFormat, setInputFormat] = useState<InputFormat>("shp");
@@ -92,11 +94,11 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({draw}) => {
             );
 
             if (response.status === 200) {
-                console.log("Upload successful:", response.data);
-                // Here you can handle the successful response,
-                // e.g., update the map with the new GeoJSON data
                 const geojsonData = response.data;
                 draw.set(geojsonData);
+
+				const features = draw.getAll().features
+				handleUpdateDrawnFeatures(features);
             }
 
             setSelectedFile(null);
@@ -252,7 +254,8 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({draw}) => {
                     sx={{
                         height: 36,
                         textTransform: 'none',
-						mr: 1
+						mr: 1,
+						flex: 2
                     }}
                 >
                     {selectedFile ? selectedFile.name : "Choose File"}
@@ -262,7 +265,8 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({draw}) => {
                     disabled={!selectedFile}
                     onClick={handleUpload}
                     sx={{
-                        height: 36
+                        height: 36,
+						flex: 3
                     }}
                 >
                     Upload

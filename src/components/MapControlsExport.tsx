@@ -259,7 +259,7 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures, handleSetEr
 					variant="outlined"
 					onClick={handleExport}
 					sx={{
-						flex: 1,
+						flex: 2,
 						height: 35,
 						minWidth: 80
 					}}
@@ -273,7 +273,8 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures, handleSetEr
 					disabled={downloadUrl ? false : true}
 					sx={{
 						height: 35,
-						ml: 1
+						ml: 1,
+						flex: 3
 					}}
 				>
 					Download
