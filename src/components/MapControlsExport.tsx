@@ -15,6 +15,7 @@ import { FC, useContext, useState } from "react";
 import { ThemeContext } from "./ThemeContext";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Feature } from "geojson";
+import axios from "axios";
 
 type MapControlExportProps = {
 	activeFeatures: Feature[]
@@ -25,6 +26,7 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures}) => {
 	const [outputFormat, setOutputFormat] = useState<string>("shp");
 	const [outputCRS, setOutputCRS] = useState<number | null>(4326);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
 	const handleOutputFormatChange = (event: SelectChangeEvent) => {
 		setOutputFormat(event.target.value as string);
@@ -41,11 +43,71 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures}) => {
 		}
 	}
 
-	const handleExport = () => {
-		console.log(outputFormat);
-		console.log(outputCRS);
-		console.log(activeFeatures);
+	const handleExport = async () => {
+		const payload = {
+			"input_geojson":{
+				"type": "FeatureCollection",
+				"features": activeFeatures
+			},
+			"output_format": outputFormat,
+			"output_crs": `EPSG:${outputCRS}`
+		}
+		const payloadString = JSON.stringify(payload);
+
+		const fetchData = async () => {
+			setLoading(true);
+            try {
+                const response = await axios.post(
+                    `https://api.geoflip.io/v1/transform/geojson`,
+					payloadString,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            apiKey: `${import.meta.env.VITE_GEOFLIP_API}`,
+                        },
+						responseType: "blob"
+                    }
+                );
+                if (response.status === 200) {
+                    const url = window.URL.createObjectURL(response.data);
+					setDownloadUrl(url);
+                } 
+            } catch (error) {
+				if (axios.isAxiosError(error) && error.response) {
+					// Handle Axios errors
+					const errorResponse = error.response;
+					try {
+						// Convert blob to text
+						const text = await errorResponse.data.text();
+						const jsonError = JSON.parse(text);
+						console.log("Error from server:", jsonError.message);
+					} catch (parseError) {
+						console.log("An unexpected error occurred. Please try again.");
+					}
+				} else {
+					// Handle other errors
+					console.log("An unexpected error occurred:", error);
+				}
+            } finally {
+                setLoading(false);
+            }
+        };
+
+		await fetchData();
 	}
+
+	const handleDownload = () => {
+		if (downloadUrl) {
+			const link = document.createElement('a');
+			link.href = downloadUrl;
+			link.download = `exported_data.${outputFormat}`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			window.URL.revokeObjectURL(downloadUrl);
+			setDownloadUrl(null);
+		}
+	};
 
 	return (
 		<Box
@@ -142,6 +204,7 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures}) => {
 					}}
 					sx={{
 						ml: 1,
+						minWidth: 130,
 						'& .MuiOutlinedInput-root': {
 							color: theme.palette.text.primary,
 							'& fieldset': {
@@ -163,17 +226,38 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures}) => {
 						},
 					}}
 				/>
+
+			</FormControl >
+			<Box 
+				sx={{
+					mt: 2,
+					flexDirection: "row",
+					display: "flex"
+				}}
+			>
 				<Button
 					variant="outlined"
 					onClick={handleExport}
 					sx={{
-						ml: 1,
+						flex: 1,
 						height: 35
 					}}
 				>
 					export
 				</Button>
-			</FormControl >
+				<Button
+					variant="contained"
+					onClick={handleDownload}
+					fullWidth
+					disabled={downloadUrl ? false : true}
+					sx={{
+						height: 35,
+						ml: 1
+					}}
+				>
+					Download
+				</Button>
+			</Box>
 			<Backdrop
 				sx={{ 
 					color: theme.palette.text.primary,
