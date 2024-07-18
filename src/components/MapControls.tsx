@@ -9,7 +9,9 @@ import { LngLat } from "mapbox-gl";
 import { ThemeContext } from "./ThemeContext";
 import { Feature } from "geojson";
 import MapControlsExport from "./MapControlsExport";
+import MapControlsUpload from "./MapControlsUpload";
 import CloseIcon from '@mui/icons-material/Close';
+
 
 type MapControlProps = {
 	draw: MapboxDraw,
@@ -81,9 +83,9 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 							ml: 3,
 							mr: 3,
 							p: 1,
-							position: 'relative', // Add this to position the X button
-							display: 'flex',      // Add this to align items
-							alignItems: 'flex-start', // Align items to the top
+							position: 'relative', 
+							display: 'flex', 
+							alignItems: 'flex-start',
 						}}
 					>
 						<Typography
@@ -112,13 +114,14 @@ const MapControls:FC<MapControlProps> = ({draw, mapCentrePosition, activeFeature
 					</Box>
 				)}
 			</Box>
-			
+			<MapControlsUpload 
+				draw={draw}
+			/>
 			<MapControlsExport 
 				activeFeatures={activeFeatures}
 				handleSetErrorMessage={handleSetErrorMessage}
 			/>
 		</Box>
-
 	);
 }
 

@@ -139,6 +139,7 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures, handleSetEr
 				ml: 3,
 				mr: 3,
 				p: 2,
+				mt: 2,
 				position: 'relative', 
 			}}
 		>
