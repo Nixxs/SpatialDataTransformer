@@ -72,6 +72,7 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures, handleSetEr
                 if (response.status === 200) {
                     const url = window.URL.createObjectURL(response.data);
 					setDownloadUrl(url);
+					handleSetErrorMessage(null);
                 } 
             } catch (error) {
 				if (axios.isAxiosError(error) && error.response) {
@@ -98,9 +99,27 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures, handleSetEr
 
 	const handleDownload = () => {
 		if (downloadUrl) {
+			const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+			let fileExtension;
+			switch (outputFormat) {
+				case 'shp':
+					fileExtension = 'zip';
+					break;
+				case 'gpkg':
+					fileExtension = 'gpkg';
+					break;
+				case 'dxf':
+					fileExtension = 'dxf';
+					break;
+				default:
+					fileExtension = outputFormat;
+			}
+			
+			const fileName = `geoflip_${timestamp}.${fileExtension}`;
+	
 			const link = document.createElement('a');
 			link.href = downloadUrl;
-			link.download = `exported_data.${outputFormat}`;
+			link.download = fileName;
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
@@ -240,7 +259,8 @@ const MapControlsExport:FC<MapControlExportProps>= ({activeFeatures, handleSetEr
 					onClick={handleExport}
 					sx={{
 						flex: 1,
-						height: 35
+						height: 35,
+						minWidth: 80
 					}}
 				>
 					export
