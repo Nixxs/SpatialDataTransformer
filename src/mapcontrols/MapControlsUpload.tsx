@@ -13,7 +13,7 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import { FC, useContext, useState, useRef } from "react";
-import { ThemeContext } from "./ThemeContext";
+import { ThemeContext } from "../components/ThemeContext";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -273,7 +273,11 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
                     component="span"
                     fullWidth
                     onClick={() => fileInputRef.current?.click()}
-                    startIcon={<CloudUploadIcon />}
+                    startIcon={<CloudUploadIcon 
+						sx={{
+							mb: 0.5
+						}}
+					/>}
                     sx={{
                         height: 36,
                         textTransform: 'none',
@@ -281,7 +285,7 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
 						flex: 2
                     }}
                 >
-                    {selectedFile ? selectedFile.name : "Choose File"}
+                    {selectedFile ? selectedFile.name : "BROWSE"}
                 </Button>
                 <Button
                     variant="contained"

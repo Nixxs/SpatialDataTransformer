@@ -111,7 +111,8 @@ const Layout = () => {
 				flex: 1,
 				display: 'flex',
 				flexDirection: 'column',
-				padding: 2
+				padding: 2,
+				height: "100%"
 			}}
 		>
 			<Box
@@ -150,6 +151,7 @@ const Layout = () => {
 					flex: 1,
 					display: 'flex',
 					flexDirection: 'row',
+					overflow: "hidden",
 				}}
 			>
 				<Box
@@ -161,6 +163,13 @@ const Layout = () => {
 						borderRadius: 3,
 						marginRight: 2,
 						marginTop: 2,
+						minWidth: 360,
+						overflow: "auto",
+						'&::-webkit-scrollbar': {
+							width: 0,
+							height: 0,
+						},
+						pb: 3
 					}}
 				>
 					{map && (

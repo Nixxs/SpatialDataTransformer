@@ -8,8 +8,9 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { LngLat } from "mapbox-gl";
 import { ThemeContext } from "./ThemeContext";
 import { Feature } from "geojson";
-import MapControlsExport from "./MapControlsExport";
-import MapControlsUpload from "./MapControlsUpload";
+import MapControlsExport from "../mapcontrols/MapControlsExport";
+import MapControlsUpload from "../mapcontrols/MapControlsUpload";
+import MapControlsTransform from "../mapcontrols/MapControlsTransform";
 import CloseIcon from '@mui/icons-material/Close';
 
 
@@ -122,6 +123,10 @@ const MapControls:FC<MapControlProps> = ({map, draw, mapCentrePosition, activeFe
 				draw={draw}
 				handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
 				stopRotation={stopRotation}
+			/>
+			<MapControlsTransform 
+				draw={draw}
+				activeFeatures={activeFeatures}
 			/>
 			<MapControlsExport 
 				activeFeatures={activeFeatures}

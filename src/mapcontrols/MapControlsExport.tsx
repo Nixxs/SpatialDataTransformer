@@ -12,7 +12,7 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import { FC, useContext, useState } from "react";
-import { ThemeContext } from "./ThemeContext";
+import { ThemeContext } from "../components/ThemeContext";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Feature } from "geojson";
 import axios from "axios";
