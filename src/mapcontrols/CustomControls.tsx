@@ -1,4 +1,3 @@
-import mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { createRoot } from 'react-dom/client';
