@@ -18,18 +18,22 @@ import BufferTransform from "./transforms/BufferTransform";
 import { Feature } from "geojson";
 
 type MapControlsTransformProps = {
+	map: mapboxgl.Map | null,
 	draw: MapboxDraw,
-	activeFeatures: Feature[]
+	activeFeatures: Feature[],
+	handleSetErrorMessage: (message:string | null) => void,
+	handleUpdateDrawnFeatures: (features: Feature[]) => void,
+	stopRotation: () => void
 }
 
-const MapControlsTransform:FC<MapControlsTransformProps> = ({draw, activeFeatures}) => {
+const MapControlsTransform:FC<MapControlsTransformProps> = ({map, draw, activeFeatures, handleSetErrorMessage, handleUpdateDrawnFeatures, stopRotation}) => {
 	const { theme } = useContext(ThemeContext);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [transformationType, setTransformationType] = useState<TransformationTypes>("buffer");
 
 	const handleTransformationTypeChange = (event: SelectChangeEvent) => {
 		const value = event.target.value;
-		if (value === "buffer" || value === "erase" || value === "clip") {
+		if (value === "buffer" || value === "erase" || value === "clip" || value === "union") {
 			setTransformationType(value);
 		}
 	}
@@ -107,17 +111,38 @@ const MapControlsTransform:FC<MapControlsTransformProps> = ({draw, activeFeature
 					<MenuItem value={"buffer"}>Buffer</MenuItem>
 					<MenuItem value={"erase"}>Erase</MenuItem>
 					<MenuItem value={"clip"}>Clip</MenuItem>
+					<MenuItem value={"union"}>Union</MenuItem>
 				</Select>
 			</FormControl>
 
 			{ transformationType == "buffer" && (
 				<BufferTransform 
+					map={map}
 					draw={draw}
 					activeFeatures={activeFeatures}
 					setLoading={setLoading}
+					handleSetErrorMessage={handleSetErrorMessage}
+					handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+					stopRotation={stopRotation}
 				/>
 			)}
 
+			<Backdrop
+				sx={{ 
+					color: theme.palette.text.primary,
+					backdropFilter: "blur(1px)",
+					zIndex: 1,
+					position: 'absolute',
+					m: 0, 
+					p: 0, 
+					width: '100%',
+					height: '100%',
+					borderRadius: 3,
+				}}
+				open={loading}
+			>
+				<CircularProgress color="inherit" />
+			</Backdrop>
 		</Box>
 	);
 };

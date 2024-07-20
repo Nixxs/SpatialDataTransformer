@@ -125,8 +125,12 @@ const MapControls:FC<MapControlProps> = ({map, draw, mapCentrePosition, activeFe
 				stopRotation={stopRotation}
 			/>
 			<MapControlsTransform 
+				map={map}
 				draw={draw}
 				activeFeatures={activeFeatures}
+				handleSetErrorMessage={handleSetErrorMessage}
+				handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+				stopRotation={stopRotation}
 			/>
 			<MapControlsExport 
 				activeFeatures={activeFeatures}

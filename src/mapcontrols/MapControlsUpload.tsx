@@ -21,6 +21,7 @@ import axios from "axios";
 import { Feature } from "geojson";
 import * as turf from '@turf/turf';
 import mapboxgl from "mapbox-gl";
+import { zoomToBounds } from "../utils/MapOperations";
 
 type MapControlUploadProps = {
 	map: mapboxgl.Map | null,
@@ -106,22 +107,7 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
 
 				stopRotation();
 
-				// Fit map to the extent of the new features using Turf.js
-				if (map && features.length > 0) {
-					const featureCollection = turf.featureCollection(features);
-					const bbox = turf.bbox(featureCollection);
-					const bounds = new mapboxgl.LngLatBounds(
-						[bbox[0], bbox[1]],
-						[bbox[2], bbox[3]]
-					);
-	
-					// the mapbox type for fitbounds seems to conflict with typescript
-					map.fitBounds(bounds, {
-						padding: 50,
-						maxZoom: 15,
-						duration: 5000 
-					} as any);
-				}
+				zoomToBounds(map, features);
             }
 
             setSelectedFile(null);

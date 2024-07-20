@@ -14,14 +14,20 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import {BufferUnitTypes} from "./TransformTypes"
 import { Feature } from "geojson";
+import { zoomToBounds } from "../../utils/MapOperations";
+import axios from "axios";
 
 type BufferTransformProps = {
+	map: mapboxgl.Map | null,
 	draw: MapboxDraw,
 	activeFeatures: Feature[],
-	setLoading: Dispatch<SetStateAction<boolean>>;
+	setLoading: Dispatch<SetStateAction<boolean>>,
+	handleSetErrorMessage: (message:string | null) => void,
+	handleUpdateDrawnFeatures: (features: Feature[]) => void,
+	stopRotation: () => void
 }
 
-const BufferTransform:FC<BufferTransformProps> = ({draw, activeFeatures, setLoading}) => {
+const BufferTransform:FC<BufferTransformProps> = ({map, draw, activeFeatures, setLoading, handleSetErrorMessage, handleUpdateDrawnFeatures, stopRotation}) => {
 	const { theme } = useContext(ThemeContext);
 	const [units, setUnits] = useState<BufferUnitTypes>("meters");
 	const [distance, setDistance] = useState<number | null>(100);
@@ -37,16 +43,72 @@ const BufferTransform:FC<BufferTransformProps> = ({draw, activeFeatures, setLoad
 		const newInput = event.target.value;
 		const numValue = parseInt(newInput);
 
-		if (!isNaN(numValue) && numValue > 0) {
+		if (!isNaN(numValue)) {
 			setDistance(numValue);
 		} else {
 			setDistance(null);
 		}
 	}
 
-	const handleApplyBuffer = () => {
-		setLoading(true);
-		console.log(activeFeatures);
+	const handleApplyBuffer = async () => {
+		const payload = {
+			"input_geojson":{
+				"type": "FeatureCollection",
+				"features": activeFeatures
+			},
+			"output_format": "geojson",
+			"transformations":[
+				{
+					"type":"buffer",
+					"distance": distance,
+					"units": units
+				}
+			]
+		}
+		const payloadString = JSON.stringify(payload);
+
+		const fetchData = async () => {
+			setLoading(true);
+            try {
+                const response = await axios.post(
+                    `https://api.geoflip.io/v1/transform/geojson`,
+					payloadString,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            apiKey: `${import.meta.env.VITE_GEOFLIP_API}`,
+                        }
+                    }
+                );
+                if (response.status === 200) {
+					const geojsonData = response.data;
+					draw.set(geojsonData);
+	
+					const features = draw.getAll().features
+					handleUpdateDrawnFeatures(features);
+	
+					stopRotation();
+					zoomToBounds(map, features);
+                } 
+            } catch (error) {
+				if (axios.isAxiosError(error) && error.response) {
+					const errorResponse = error.response;
+					try {
+						const text = await errorResponse.data.text();
+						const jsonError = JSON.parse(text);
+						handleSetErrorMessage(`error from geoflip - ${jsonError.message}`);
+					} catch (parseError) {
+						handleSetErrorMessage("An unexpected error occurred. Please try again.");
+					}
+				} else {
+					handleSetErrorMessage(`An unexpected error occurred - ${error}`);
+				}
+            } finally {
+                setLoading(false);
+            }
+        };
+
+		await fetchData();
 	}
 	
 	return (
