@@ -1,29 +1,29 @@
 import { 	
-	Typography, 
-	Box, 
-	Select, 
-	MenuItem, 
-	SelectChangeEvent, 
-	InputLabel, 
-	FormControl, 
-	TextField, 
+	Box,
+	Button,
+	FormControl,
+	InputLabel,
+	Select,
+	MenuItem,
 	InputAdornment,
-	Button
+	TextField,
+	SelectChangeEvent
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import Backdrop from "@mui/material/Backdrop";
-import { FC, useContext, useState, useRef } from "react";
-import { ThemeContext } from "../components/ThemeContext";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import axios from "axios";
+import { FC, Dispatch, SetStateAction, useState, useContext, useRef } from "react";
+import { ThemeContext } from "../../components/ThemeContext";
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { Feature } from "geojson";
-import { zoomToBounds } from "../utils/MapOperations";
+import { zoomToBounds } from "../../utils/MapOperations";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import axios from "axios";
 
-type MapControlUploadProps = {
+type EraseTransformProps = {
 	map: mapboxgl.Map | null,
 	draw: MapboxDraw,
+	activeFeatures: Feature[],
+	setLoading: Dispatch<SetStateAction<boolean>>,
+	handleSetErrorMessage: (message:string | null) => void,
 	handleUpdateDrawnFeatures: (features: Feature[]) => void,
 	stopRotation: () => void
 }
@@ -36,13 +36,20 @@ type UploadConfig = {
 	input_crs?: string,
 }
 
-const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDrawnFeatures, stopRotation}) => {
+const EraseTransform:FC<EraseTransformProps> = ({map, draw, activeFeatures, setLoading, handleSetErrorMessage, handleUpdateDrawnFeatures, stopRotation}) => {
 	const { theme } = useContext(ThemeContext);
-	const [loading, setLoading] = useState<boolean>(false);
 	const [inputFormat, setInputFormat] = useState<InputFormat>("shp");
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [inputCRS, setInputCRS] = useState<number | null>(4326);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [eraseFeatures, setEraseFeatures] = useState<Feature[]>([]);
+
+	const handleInputFormatChange = (event: SelectChangeEvent) => {
+		const value = event.target.value;
+		if (value === "shp" || value === "dxf" || value === "gpkg") {
+			setInputFormat(value);
+		}
+	}
 
 	const handleInputCRSChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newInput = event.target.value;
@@ -55,18 +62,76 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
 		}
 	}
 
-	const handleInputFormatChange = (event: SelectChangeEvent) => {
-		const value = event.target.value;
-		if (value === "shp" || value === "dxf" || value === "gpkg") {
-			setInputFormat(value);
-		}
-	}
-
 	const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files && event.target.files.length > 0) {
 			setSelectedFile(event.target.files[0]);
 		}
 	};
+
+	const handleApplyErase = async () => {
+		const payload = {
+			"input_geojson":{
+				"type": "FeatureCollection",
+				"features": activeFeatures
+			},
+			"output_format": "geojson",
+			"transformations":[
+				{
+					"type":"erase",
+					"erasing_geojson":{
+						"type": "FeatureCollection",
+						"features": eraseFeatures
+					}
+				}
+			]
+		}
+		const payloadString = JSON.stringify(payload);
+
+		const fetchData = async () => {
+			setLoading(true);
+            try {
+                const response = await axios.post(
+                    `https://api.geoflip.io/v1/transform/geojson`,
+					payloadString,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            apiKey: `${import.meta.env.VITE_GEOFLIP_API}`,
+                        }
+                    }
+                );
+                if (response.status === 200) {
+					const geojsonData = response.data;
+					draw.set(geojsonData);
+	
+					const features = draw.getAll().features
+					handleUpdateDrawnFeatures(features);
+
+					setEraseFeatures([]);
+	
+					stopRotation();
+					zoomToBounds(map, features);
+                } 
+            } catch (error) {
+				if (axios.isAxiosError(error) && error.response) {
+					const errorResponse = error.response;
+					try {
+						const text = await errorResponse.data.text();
+						const jsonError = JSON.parse(text);
+						handleSetErrorMessage(`error from geoflip - ${jsonError.message}`);
+					} catch (parseError) {
+						handleSetErrorMessage("An unexpected error occurred. Please try again.");
+					}
+				} else {
+					handleSetErrorMessage(`An unexpected error occurred - ${error}`);
+				}
+            } finally {
+                setLoading(false);
+            }
+        };
+
+		await fetchData();
+	}
 
 	const handleUpload = async () => {
         if (!selectedFile) return;
@@ -99,15 +164,42 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
             );
 
             if (response.status === 200) {
-                const geojsonData = response.data;
-                draw.set(geojsonData);
+				const geojsonData = response.data;
+				const responseEraseFeatures: Feature[] = geojsonData.features;
+				setEraseFeatures(geojsonData.features);
+			
+				// Find the maximum ID in activeFeatures
+				const maxId = activeFeatures.reduce((max, feature) => {
+					const id = feature.id ? parseInt(feature.id.toString(), 10) : 0;
+					return id > max ? id : max;
+				}, 0);
+			
+				// Increment the IDs in responseEraseFeatures starting from maxId + 1
+				responseEraseFeatures.forEach((feature, index) => {
+					feature.id = (maxId + index + 1).toString();
 
-				const features = draw.getAll().features
-				handleUpdateDrawnFeatures(features);
+					// Add styling to make the feature red
+					feature.properties = {
+						...feature.properties,
+						"stroke": '#FF0000',          // Red outline
+						'stroke-width': 2,          // Width of the outline
+						'stroke-opacity': 1,        // Opacity of the outline
+						"fill": '#FF0000',            // Red fill
+						'fill-opacity': 0.5         // 50% opacity for the fill
+					};
+				});
+			
+				// Combine the features from both FeatureCollections
+				const combinedFeatures: GeoJSON.FeatureCollection = {
+					type: "FeatureCollection",
+					features: [...activeFeatures, ...responseEraseFeatures]
+				};
 
+				// Set the combined features in draw
+				draw.set(combinedFeatures);
+			
 				stopRotation();
-
-				zoomToBounds(map, features);
+				zoomToBounds(map, combinedFeatures.features);
             }
 
             setSelectedFile(null);
@@ -118,33 +210,17 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
             setLoading(false);
         }
     };
-
+	
 	return (
 		<Box
-		sx={{
-			borderWidth: 0.5,
-			flex: 1,
-			borderStyle: "dashed",
-			borderColor: theme.palette.text.secondary,
-			borderRadius: 2,
-			ml: 3,
-			mr: 3,
-			p: 2,
-			position: 'relative', 
-		}}
+			sx={{
+				mt:2,
+				display: "flex",
+				flexDirection: "column"
+			}}
 		>
-			<Typography
-				sx={{
-					fontSize: 16,
-					fontWeight: 500,
-					color: theme.palette.text.secondary
-				}}
-			>
-				Upload Data
-			</Typography>
 			<FormControl 
 				sx={{
-					mt: 2,
 					flexDirection: "row",
 					display: "flex"
 				}}
@@ -239,14 +315,6 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
 						}}
 					/>
 				)}
-			</FormControl >
-			<Box
-				sx={{
-					display: "flex",
-					flexDirection:"row",
-					mt: 2
-				}}
-			>
 				<input
                     type="file"
                     accept={inputFormat == "shp" ? ".zip" : `.${inputFormat}`}
@@ -267,12 +335,21 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
                     sx={{
                         height: 36,
                         textTransform: 'none',
-						mr: 1,
+						ml: 1,
 						flex: 2
                     }}
                 >
                     {selectedFile ? selectedFile.name : "BROWSE"}
                 </Button>
+			</FormControl >
+			<Box
+				sx={{
+					display: "flex",
+					flexDirection:"row",
+					mt: 2
+				}}
+			>
+
                 <Button
                     variant="contained"
                     disabled={!selectedFile}
@@ -285,24 +362,20 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
                     Upload
                 </Button>
 			</Box>
-			<Backdrop
-				sx={{ 
-					color: theme.palette.text.primary,
-					backdropFilter: "blur(1px)",
-					zIndex: 1,
-					position: 'absolute',
-					m: 0, 
-					p: 0, 
-					width: '100%',
-					height: '100%',
-					borderRadius: 3,
+			<Button
+				variant="contained"
+				disabled={activeFeatures.length > 0 && eraseFeatures.length > 0 ? false : true}
+				fullWidth
+				onClick={handleApplyErase}
+				sx={{
+					mt: 2
 				}}
-				open={loading}
 			>
-				<CircularProgress color="inherit" />
-			</Backdrop>
+				Apply Erase <ArrowRightIcon />
+			</Button>
 		</Box>
 	);
-} 
+}
 
-export default MapControlsUpload;
+export default EraseTransform;
+

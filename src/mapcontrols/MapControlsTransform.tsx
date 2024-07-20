@@ -16,6 +16,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { TransformationTypes } from "./transforms/TransformTypes";
 import BufferTransform from "./transforms/BufferTransform";
 import UnionTransform from "./transforms/UnionTransform";
+import EraseTransform from "./transforms/EraseTransform";
 import { Feature } from "geojson";
 
 type MapControlsTransformProps = {
@@ -56,6 +57,18 @@ const MapControlsTransform:FC<MapControlsTransformProps> = ({map, draw, activeFe
 			case "union":
 				return (
 					<UnionTransform 
+						map={map}
+						draw={draw}
+						activeFeatures={activeFeatures}
+						setLoading={setLoading}
+						handleSetErrorMessage={handleSetErrorMessage}
+						handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+						stopRotation={stopRotation}
+					/>
+				);
+			case "erase":
+				return (
+					<EraseTransform 
 						map={map}
 						draw={draw}
 						activeFeatures={activeFeatures}
