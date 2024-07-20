@@ -38,7 +38,7 @@ export const lightTheme = {
 			fogHighColor: "#fff",
 		},
 		features: {
-			erase: "#f53333",
+			erase: "#c72626",
 		}
 	},
 };
@@ -72,7 +72,7 @@ export const darkTheme = {
 			fogHighColor: "#36414f",
 		},
 		features: {
-			erase: "#f53333",
+			erase: "#c72626",
 		}
 	},
 };

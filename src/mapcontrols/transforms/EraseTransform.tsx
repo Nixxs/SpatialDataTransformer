@@ -201,6 +201,7 @@ const EraseTransform:FC<EraseTransformProps> = ({map, draw, activeFeatures, setL
 				const source = map?.getSource('combined-features') as mapboxgl.GeoJSONSource;
 				source.setData(combinedFeatures);
 			
+				setSelectedFile(null);
 				stopRotation();
 				zoomToBounds(map, combinedFeatures.features);
             }

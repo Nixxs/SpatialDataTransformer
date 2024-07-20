@@ -69,7 +69,7 @@ const Layout = () => {
 					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'Polygon']],
 					paint: {
 						'fill-color': theme.palette.features.erase,
-						'fill-opacity': 0.5
+						'fill-opacity': 0.3
 					}
 				});
 
@@ -104,8 +104,8 @@ const Layout = () => {
 					source: 'combined-features',
 					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'Point']],
 					paint: {
-						'circle-color': theme.palette.features.erase,
-						'circle-radius': 6,
+						'circle-color': theme.palette.error.secondary,
+						'circle-radius': 3,
 						'circle-stroke-width': 2,
 						'circle-stroke-color': theme.palette.features.erase,
 					}
