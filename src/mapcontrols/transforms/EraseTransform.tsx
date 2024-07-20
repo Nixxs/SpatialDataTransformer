@@ -352,30 +352,31 @@ const EraseTransform:FC<EraseTransformProps> = ({map, draw, activeFeatures, setL
 					mt: 2
 				}}
 			>
-
                 <Button
                     variant="contained"
                     disabled={!selectedFile}
                     onClick={handleUpload}
                     sx={{
                         height: 36,
-						flex: 3
+						flex: 1
                     }}
                 >
                     Upload
                 </Button>
+				<Button
+					variant="contained"
+					disabled={activeFeatures.length > 0 && eraseFeatures.length > 0 ? false : true}
+					fullWidth
+					onClick={handleApplyErase}
+					sx={{
+						ml: 1,
+						flex: 2
+					}}
+				>
+					Apply Erase <ArrowRightIcon />
+				</Button>
 			</Box>
-			<Button
-				variant="contained"
-				disabled={activeFeatures.length > 0 && eraseFeatures.length > 0 ? false : true}
-				fullWidth
-				onClick={handleApplyErase}
-				sx={{
-					mt: 2
-				}}
-			>
-				Apply Erase <ArrowRightIcon />
-			</Button>
+
 		</Box>
 	);
 }

@@ -48,14 +48,13 @@ const UnionTransform:FC<UnionTransformProps> = ({map, draw, activeFeatures, setL
                     }
                 );
                 if (response.status === 200) {
-					const geojsonData = response.data;
+					const geojsonData = response.data as GeoJSON.FeatureCollection ;
 					draw.set(geojsonData);
-	
-					const features = draw.getAll().features
-					handleUpdateDrawnFeatures(features);
+
+					handleUpdateDrawnFeatures(geojsonData.features);
 	
 					stopRotation();
-					zoomToBounds(map, features);
+					zoomToBounds(map, geojsonData.features);
                 } 
             } catch (error) {
 				if (axios.isAxiosError(error) && error.response) {
