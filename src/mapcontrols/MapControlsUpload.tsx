@@ -105,9 +105,10 @@ const MapControlsUpload: FC<MapControlUploadProps> = ({map, draw, handleUpdateDr
 				const features = draw.getAll().features
 				handleUpdateDrawnFeatures(features);
 
+				setSelectedFile(null);
 				stopRotation();
-
 				zoomToBounds(map, features);
+
             }
 
             setSelectedFile(null);

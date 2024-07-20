@@ -36,6 +36,9 @@ export const lightTheme = {
 			space: "#f0f4f7",
 			fogColor: "#b3c8e3",
 			fogHighColor: "#fff",
+		},
+		features: {
+			erase: "#f53333",
 		}
 	},
 };
@@ -67,6 +70,9 @@ export const darkTheme = {
 			space: "#14181f",
 			fogColor: "#b3c8e3",
 			fogHighColor: "#36414f",
+		},
+		features: {
+			erase: "#f53333",
 		}
 	},
 };

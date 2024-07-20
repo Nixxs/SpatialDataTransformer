@@ -51,7 +51,66 @@ const Layout = () => {
             if (map.current && drawRef.current) {
                 map.current.addControl(drawRef.current as mapboxgl.IControl, 'top-left');
 				map.current.addControl(new ClearAll(drawRef.current, handleUpdateDrawnFeatures), 'top-left');
-            }
+				
+				// Add a data source containing GeoJSON data
+				map.current.addSource('combined-features', {
+					type: 'geojson',
+					data: {
+						type: 'FeatureCollection',
+						features: []
+					}
+				});
+
+				// Add a fill layer for the red polygon features
+				map.current.addLayer({
+					id: 'red-fill',
+					type: 'fill',
+					source: 'combined-features',
+					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'Polygon']],
+					paint: {
+						'fill-color': theme.palette.features.erase,
+						'fill-opacity': 0.5
+					}
+				});
+
+				// Add a line layer for the polygon outlines
+				map.current.addLayer({
+					id: 'red-outline',
+					type: 'line',
+					source: 'combined-features',
+					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'Polygon']],
+					paint: {
+						'line-color': theme.palette.features.erase,
+						'line-width': 2
+					}
+				});
+
+				// Add a line layer for the red line features
+				map.current.addLayer({
+					id: 'red-line',
+					type: 'line',
+					source: 'combined-features',
+					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'LineString']],
+					paint: {
+						'line-color': theme.palette.features.erase,
+						'line-width': 2
+					}
+				});
+
+				// Add a circle layer for the red point features
+				map.current.addLayer({
+					id: 'red-point',
+					type: 'circle',
+					source: 'combined-features',
+					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'Point']],
+					paint: {
+						'circle-color': theme.palette.features.erase,
+						'circle-radius': 6,
+						'circle-stroke-width': 2,
+						'circle-stroke-color': theme.palette.features.erase,
+					}
+				});
+			}
 		});
 		
 		// doesn't seem to be a proper type for the draw events 

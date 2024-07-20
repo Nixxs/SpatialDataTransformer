@@ -108,6 +108,10 @@ const EraseTransform:FC<EraseTransformProps> = ({map, draw, activeFeatures, setL
 					handleUpdateDrawnFeatures(features);
 
 					setEraseFeatures([]);
+
+					// Update the source data for the layers
+					const source = map?.getSource('combined-features') as mapboxgl.GeoJSONSource;
+					source.setData(geojsonData);
 	
 					stopRotation();
 					zoomToBounds(map, features);
@@ -178,15 +182,10 @@ const EraseTransform:FC<EraseTransformProps> = ({map, draw, activeFeatures, setL
 				responseEraseFeatures.forEach((feature, index) => {
 					feature.id = (maxId + index + 1).toString();
 
-					// Add styling to make the feature red
-					feature.properties = {
-						...feature.properties,
-						"stroke": '#FF0000',          // Red outline
-						'stroke-width': 2,          // Width of the outline
-						'stroke-opacity': 1,        // Opacity of the outline
-						"fill": '#FF0000',            // Red fill
-						'fill-opacity': 0.5         // 50% opacity for the fill
-					};
+					if (!feature.properties) {
+						feature.properties = {};
+					}
+					feature.properties.style = "red";
 				});
 			
 				// Combine the features from both FeatureCollections
@@ -197,6 +196,10 @@ const EraseTransform:FC<EraseTransformProps> = ({map, draw, activeFeatures, setL
 
 				// Set the combined features in draw
 				draw.set(combinedFeatures);
+
+				// Update the source data for the layers
+				const source = map?.getSource('combined-features') as mapboxgl.GeoJSONSource;
+				source.setData(combinedFeatures);
 			
 				stopRotation();
 				zoomToBounds(map, combinedFeatures.features);
