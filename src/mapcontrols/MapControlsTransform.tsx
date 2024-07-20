@@ -15,6 +15,7 @@ import { ThemeContext } from "../components/ThemeContext";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { TransformationTypes } from "./transforms/TransformTypes";
 import BufferTransform from "./transforms/BufferTransform";
+import UnionTransform from "./transforms/UnionTransform";
 import { Feature } from "geojson";
 
 type MapControlsTransformProps = {
@@ -29,12 +30,58 @@ type MapControlsTransformProps = {
 const MapControlsTransform:FC<MapControlsTransformProps> = ({map, draw, activeFeatures, handleSetErrorMessage, handleUpdateDrawnFeatures, stopRotation}) => {
 	const { theme } = useContext(ThemeContext);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [transformationType, setTransformationType] = useState<TransformationTypes>("buffer");
+	const [transformationType, setTransformationType] = useState<TransformationTypes>("none");
 
 	const handleTransformationTypeChange = (event: SelectChangeEvent) => {
 		const value = event.target.value;
-		if (value === "buffer" || value === "erase" || value === "clip" || value === "union") {
+		if (value === "buffer" || value === "erase" || value === "clip" || value === "union" || value === "none") {
 			setTransformationType(value);
+		}
+	}
+
+	const transformComponent = () => {
+		switch(transformationType) {
+			case "buffer":
+				return (
+					<BufferTransform 
+						map={map}
+						draw={draw}
+						activeFeatures={activeFeatures}
+						setLoading={setLoading}
+						handleSetErrorMessage={handleSetErrorMessage}
+						handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+						stopRotation={stopRotation}
+					/>
+				);
+			case "union":
+				return (
+					<UnionTransform 
+						map={map}
+						draw={draw}
+						activeFeatures={activeFeatures}
+						setLoading={setLoading}
+						handleSetErrorMessage={handleSetErrorMessage}
+						handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+						stopRotation={stopRotation}
+					/>
+				);
+			case "none":
+				return (
+					null
+				);
+			default:
+				return (
+					<Typography
+						sx={{
+							fontSize: 14,
+							fontWeight: 400,
+							color: theme.palette.text.secondary,
+							mt: 1
+						}}
+					>
+						Transform type not supported yet
+					</Typography>
+				); 
 		}
 	}
 
@@ -108,6 +155,7 @@ const MapControlsTransform:FC<MapControlsTransformProps> = ({map, draw, activeFe
 						},
 					}}
 				>
+					<MenuItem value={"none"}>None</MenuItem>
 					<MenuItem value={"buffer"}>Buffer</MenuItem>
 					<MenuItem value={"erase"}>Erase</MenuItem>
 					<MenuItem value={"clip"}>Clip</MenuItem>
@@ -115,17 +163,7 @@ const MapControlsTransform:FC<MapControlsTransformProps> = ({map, draw, activeFe
 				</Select>
 			</FormControl>
 
-			{ transformationType == "buffer" && (
-				<BufferTransform 
-					map={map}
-					draw={draw}
-					activeFeatures={activeFeatures}
-					setLoading={setLoading}
-					handleSetErrorMessage={handleSetErrorMessage}
-					handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
-					stopRotation={stopRotation}
-				/>
-			)}
+			{transformComponent()}
 
 			<Backdrop
 				sx={{ 
