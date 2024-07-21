@@ -209,10 +209,32 @@ const Layout = () => {
 				sx={{
 					flex: 1,
 					display: 'flex',
-					flexDirection: 'row',
+					flexDirection: {xs: "column", sm: "column", md: 'row'},
 					overflow: "hidden",
 				}}
 			>
+				<Box
+					sx={{
+						flex: 3,
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+						backgroundColor: theme.palette.background.paper,
+						borderRadius: 3,
+						marginTop: 2,
+						order: {xs: 1, sm: 1, md: 2},
+					}}
+				>
+					<div
+						style={{
+							height: "100%",
+							borderRadius: 12,
+						}}
+						ref={mapContainer}
+						className="map-container"
+					/>
+				</Box>
 				<Box
 					sx={{
 						flex: 1,
@@ -220,15 +242,18 @@ const Layout = () => {
 						flexDirection: 'column',
 						backgroundColor: theme.palette.background.paper,
 						borderRadius: 3,
-						marginRight: 2,
-						marginTop: 2,
-						minWidth: 360,
+						minHeight: 240,
+						marginRight: {xs: 0, md: 2},
+						marginTop: {xs: 2, md: 2},
+						marginBottom: {xs: 2, md: 0},
+						minWidth: {xs: '100%', md: 360},
 						overflow: "auto",
 						'&::-webkit-scrollbar': {
 							width: 0,
 							height: 0,
 						},
-						pb: 3
+						pb: 3,
+						order: {xs: 2, sm: 2, md: 1},
 					}}
 				>
 					{map && (
@@ -242,28 +267,7 @@ const Layout = () => {
 						/>
 					)}
 				</Box>
-				<Box
-					sx={{
-						flex: 3,
-						display: 'flex',
-						flexDirection: 'column',
-						justifyContent: 'center',
-						alignItems: 'center',
-						backgroundColor: theme.palette.background.paper,
-						borderRadius: 3,
-						marginTop: 2,
-					}}
-				>
-					<div
-						style={{
-							height: "100%",
-							borderRadius: 12,
-						}}
-						ref={mapContainer}
-						className="map-container"
-					/>
-				</Box>
-			</Box>
+</Box>
 		</Box>
 	);
 }
