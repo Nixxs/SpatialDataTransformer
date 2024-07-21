@@ -33,8 +33,19 @@
     color: #000; 
 }
 
+/* Example of how to change mapbox default draw tool icons
+these are the classes you need to target, icon is the background-image:
+.mapboxgl-ctrl-group .mapbox-gl-draw_polygon 
+.mapboxgl-ctrl-group .mapbox-gl-draw_polygon.active 
+
+.mapboxgl-ctrl-group .mapbox-gl-draw_line 
+.mapboxgl-ctrl-group .mapbox-gl-draw_line.active 
+
+.mapboxgl-ctrl-group .mapbox-gl-draw_point 
+.mapboxgl-ctrl-group .mapbox-gl-draw_point.active  */
+
 .mapboxgl-ctrl-group .mapbox-gl-draw_polygon {
-    background-image: url('https://www.svgrepo.com/show/532036/cloud-rain-alt.svg') !important;
+    background-image: url('https://www.svgrepo.com/show/364766/polygon-fill.svg') !important;
 	background-size: 20px 20px; /* Adjust this to change the icon size */
     background-position: center;
     background-repeat: no-repeat;
@@ -43,9 +54,8 @@
 }
 
 .mapboxgl-ctrl-group .mapbox-gl-draw_polygon.active {
-    background-image: url('https://www.svgrepo.com/show/532030/circle-heat.svg') !important;
+    background-image: url('https://www.svgrepo.com/show/364766/polygon-fill.svg') !important;
 	background-size: 20px 20px; /* Adjust this to change the icon size */
-	background-color: cornflowerblue;
     background-position: center;
     background-repeat: no-repeat;
     width: 30px; /* Adjust this to change the button width */
