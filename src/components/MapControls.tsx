@@ -42,7 +42,8 @@ const MapControls:FC<MapControlProps> = ({map, draw, mapCentrePosition, activeFe
 				sx={{
 					mb: 2,
 					flex: 1,
-					textAlign: "center"
+					textAlign: "center",
+					display: {xs:"none", sm:"none", md:"inline", }
 				}}
 			>
 				<Typography
@@ -118,24 +119,31 @@ const MapControls:FC<MapControlProps> = ({map, draw, mapCentrePosition, activeFe
 					</Box>
 				)}
 			</Box>
-			<MapControlsUpload
-				map={map}
-				draw={draw}
-				handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
-				stopRotation={stopRotation}
-			/>
-			<MapControlsTransform 
-				map={map}
-				draw={draw}
-				activeFeatures={activeFeatures}
-				handleSetErrorMessage={handleSetErrorMessage}
-				handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
-				stopRotation={stopRotation}
-			/>
-			<MapControlsExport 
-				activeFeatures={activeFeatures}
-				handleSetErrorMessage={handleSetErrorMessage}
-			/>
+
+			<Box
+				sx={{
+					mt: {xs:3, sm:3, md:0},
+				}}
+			>
+				<MapControlsUpload
+					map={map}
+					draw={draw}
+					handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+					stopRotation={stopRotation}
+				/>
+				<MapControlsTransform 
+					map={map}
+					draw={draw}
+					activeFeatures={activeFeatures}
+					handleSetErrorMessage={handleSetErrorMessage}
+					handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+					stopRotation={stopRotation}
+				/>
+				<MapControlsExport 
+					activeFeatures={activeFeatures}
+					handleSetErrorMessage={handleSetErrorMessage}
+				/>
+			</Box>
 		</Box>
 	);
 }
