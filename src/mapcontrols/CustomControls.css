@@ -32,3 +32,22 @@
     height: 20px;
     color: #000; 
 }
+
+.mapboxgl-ctrl-group .mapbox-gl-draw_polygon {
+    background-image: url('https://www.svgrepo.com/show/532036/cloud-rain-alt.svg') !important;
+	background-size: 20px 20px; /* Adjust this to change the icon size */
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 30px; /* Adjust this to change the button width */
+    height: 30px; /* Adjust this to change the button height */
+}
+
+.mapboxgl-ctrl-group .mapbox-gl-draw_polygon.active {
+    background-image: url('https://www.svgrepo.com/show/532030/circle-heat.svg') !important;
+	background-size: 20px 20px; /* Adjust this to change the icon size */
+	background-color: cornflowerblue;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 30px; /* Adjust this to change the button width */
+    height: 30px; /* Adjust this to change the button height */
+}
