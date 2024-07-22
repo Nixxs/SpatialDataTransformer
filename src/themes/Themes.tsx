@@ -39,6 +39,7 @@ export const lightTheme = {
 		},
 		features: {
 			erase: "#c72626",
+			clip: "#fc7e23"
 		}
 	},
 };
@@ -73,6 +74,7 @@ export const darkTheme = {
 		},
 		features: {
 			erase: "#c72626",
+			clip: "#fc7e23"
 		}
 	},
 };
