@@ -17,6 +17,7 @@ import { TransformationTypes } from "./transforms/TransformTypes";
 import BufferTransform from "./transforms/BufferTransform";
 import UnionTransform from "./transforms/UnionTransform";
 import EraseTransform from "./transforms/EraseTransform";
+import ClipTransform from "./transforms/ClipTransform";
 import { Feature } from "geojson";
 
 type MapControlsTransformProps = {
@@ -69,6 +70,18 @@ const MapControlsTransform:FC<MapControlsTransformProps> = ({map, draw, activeFe
 			case "erase":
 				return (
 					<EraseTransform 
+						map={map}
+						draw={draw}
+						activeFeatures={activeFeatures}
+						setLoading={setLoading}
+						handleSetErrorMessage={handleSetErrorMessage}
+						handleUpdateDrawnFeatures={handleUpdateDrawnFeatures}
+						stopRotation={stopRotation}
+					/>
+				);
+			case "clip":
+				return (
+					<ClipTransform 
 						map={map}
 						draw={draw}
 						activeFeatures={activeFeatures}
