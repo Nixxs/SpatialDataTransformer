@@ -7,6 +7,7 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import MapControls from './MapControls';
 import { Feature } from "geojson";
 import "../mapcontrols/CustomControls.css";
+import { getLayerStyles } from '../themes/LayerStyles';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN as string;
 
@@ -61,53 +62,9 @@ const Layout = () => {
 					}
 				});
 
-				// Add a fill layer for the red polygon features
-				map.current.addLayer({
-					id: 'red-fill',
-					type: 'fill',
-					source: 'combined-features',
-					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'Polygon']],
-					paint: {
-						'fill-color': theme.palette.features.erase,
-						'fill-opacity': 0.3
-					}
-				});
-
-				// Add a line layer for the polygon outlines
-				map.current.addLayer({
-					id: 'red-outline',
-					type: 'line',
-					source: 'combined-features',
-					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'Polygon']],
-					paint: {
-						'line-color': theme.palette.features.erase,
-						'line-width': 2
-					}
-				});
-
-				// Add a line layer for the red line features
-				map.current.addLayer({
-					id: 'red-line',
-					type: 'line',
-					source: 'combined-features',
-					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'LineString']],
-					paint: {
-						'line-color': theme.palette.features.erase,
-						'line-width': 2
-					}
-				});
-
-				// Add a circle layer for the red point features
-				map.current.addLayer({
-					id: 'red-point',
-					type: 'circle',
-					source: 'combined-features',
-					filter: ['all', ['==', ['get', 'style'], 'red'], ['==', ['geometry-type'], 'Point']],
-					paint: {
-						'circle-color': theme.palette.error.secondary,
-						'circle-radius': 3,
-						'circle-stroke-width': 2,
-						'circle-stroke-color': theme.palette.features.erase,
+				getLayerStyles(theme).forEach(style => {
+					if (map.current){
+						map.current.addLayer(style);
 					}
 				});
 			}
@@ -267,7 +224,7 @@ const Layout = () => {
 						/>
 					)}
 				</Box>
-</Box>
+			</Box>
 		</Box>
 	);
 }
